@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Node
+node_modules/
+dist/
+build/
+
+# VS Code
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite
+*.db
+
+# Electron
+release/
+
+# AI Models
+models/
+
+# Dataset
+datasets/
+
+# Cache
+.cache/
