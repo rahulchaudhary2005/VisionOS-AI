@@ -2,12 +2,16 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.database.init_db import create_database
+
 from app.api.routes.health import router as health_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("🚀 Starting VisionOS AI Backend...")
+    create_database()
+    print("Database Ready")
     yield
     print("🛑 Shutting down VisionOS AI Backend...")
 
