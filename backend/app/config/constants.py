@@ -1,0 +1,11 @@
+API_VERSION = "/api/v1"
+
+PROJECT_NAME = "VisionOS AI"
+
+MAX_UPLOAD_SIZE = 100 * 1024 * 1024
+
+DEFAULT_CAMERA = 0
+
+FPS = 30
+
+MODEL_PATH = "models/"
