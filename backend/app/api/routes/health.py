@@ -1,6 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
+from app.api.dependencies import get_db
 from app.schemas.health import HealthResponse
+from app.services.health_service import HealthService
 
 router = APIRouter()
 
@@ -10,14 +13,13 @@ router = APIRouter()
     response_model=HealthResponse,
     summary="Application Health Check",
 )
-async def health_check() -> HealthResponse:
+async def health_check(
+    db: Session = Depends(get_db),
+) -> HealthResponse:
     """
-    Returns the health status of the application.
+    Returns the current health status of the application.
     """
 
-    return HealthResponse(
-        success=True,
-        project="VisionOS AI",
-        version="1.0.0",
-        status="healthy",
-    )
+    service = HealthService(db)
+
+    return service.get_health()

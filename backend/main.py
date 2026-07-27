@@ -47,6 +47,9 @@ app.add_exception_handler(
 # -----------------------------
 app.add_middleware(RequestIDMiddleware)
 
+from app.middleware.performance import PerformanceMiddleware
+
+app.add_middleware(PerformanceMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
