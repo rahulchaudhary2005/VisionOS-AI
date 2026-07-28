@@ -1,0 +1,6 @@
+# Require review from core maintainers for backend changes
+/backend/ @rahulchaudhary2005
+
+# Docs and CI
+/.github/ @rahulchaudhary2005
+README.md @rahulchaudhary2005
