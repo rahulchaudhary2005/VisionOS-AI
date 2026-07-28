@@ -22,10 +22,12 @@ os.environ.setdefault("JWT_SECRET", "test_jwt_secret")
 import tempfile
 import atexit
 
-_tmp_db = tempfile.NamedTemporaryFile(prefix="visionos_test_", suffix=".db", delete=False)
+_tmp_db = tempfile.NamedTemporaryFile(
+    prefix="visionos_test_", suffix=".db", delete=False
+)
 _tmp_db_path = _tmp_db.name
 _tmp_db.close()
-os.environ.setdefault("DATABASE_URL", f"sqlite:///{_tmp_db_path.replace('\\', '/')}" )
+os.environ.setdefault("DATABASE_URL", f"sqlite:///{_tmp_db_path.replace('\\', '/')}")
 os.environ.setdefault("OLLAMA_URL", "http://localhost")
 
 
@@ -36,6 +38,7 @@ def _cleanup_test_db():
         _os.unlink(_tmp_db_path)
     except Exception:
         pass
+
 
 atexit.register(_cleanup_test_db)
 

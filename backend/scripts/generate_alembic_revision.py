@@ -7,6 +7,7 @@ Usage:
 This script sets the alembic config's sqlalchemy.url from app settings
 and calls alembic.command.revision(autogenerate=True).
 """
+
 from __future__ import annotations
 
 import sys
@@ -14,7 +15,6 @@ from pathlib import Path
 
 from alembic.config import Config
 from alembic import command
-
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))

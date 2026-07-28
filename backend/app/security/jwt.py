@@ -34,9 +34,6 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, Final, Mapping, Optional
 from uuid import UUID, uuid4
 
-from jose import ExpiredSignatureError, JWTError, jwt
-from pydantic import EmailStr, TypeAdapter, ValidationError
-
 from app.config.settings import settings
 from app.security.constants import (
     ACCESS_TOKEN_TYPE,
@@ -64,6 +61,8 @@ from app.security.exceptions import (
     InvalidTokenTypeException,
 )
 from app.security.types import JWTPayload
+from jose import ExpiredSignatureError, JWTError, jwt
+from pydantic import EmailStr, TypeAdapter, ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -238,9 +237,11 @@ class JWTManager:
         """
         spec = TokenSpec(
             token_type=ACCESS_TOKEN_TYPE,
-            expires_delta=expires_delta
-            if expires_delta is not None
-            else timedelta(minutes=self._access_token_minutes),
+            expires_delta=(
+                expires_delta
+                if expires_delta is not None
+                else timedelta(minutes=self._access_token_minutes)
+            ),
             audience=audience or self._audience,
         )
         payload = self._build_payload(
@@ -300,9 +301,11 @@ class JWTManager:
         """
         spec = TokenSpec(
             token_type=REFRESH_TOKEN_TYPE,
-            expires_delta=expires_delta
-            if expires_delta is not None
-            else timedelta(days=self._refresh_token_days),
+            expires_delta=(
+                expires_delta
+                if expires_delta is not None
+                else timedelta(days=self._refresh_token_days)
+            ),
             audience=audience or self._audience,
         )
         payload = self._build_payload(
@@ -483,7 +486,9 @@ class JWTManager:
         """
         issuer = self._get_claim(payload, CLAIM_ISSUER)
         if issuer != self._issuer:
-            logger.info("Issuer validation failed: expected=%s actual=%s", self._issuer, issuer)
+            logger.info(
+                "Issuer validation failed: expected=%s actual=%s", self._issuer, issuer
+            )
             raise InvalidTokenException()
 
     def validate_audience(self, payload: JWTPayload | Mapping[str, Any]) -> None:

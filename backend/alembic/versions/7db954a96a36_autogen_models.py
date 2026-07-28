@@ -5,11 +5,11 @@ Revises: 0001_create_users_and_token_blacklist
 Create Date: 2026-07-28 09:41:28.958869
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-
 
 # revision identifiers, used by Alembic.
 revision: str = "7db954a96a36"
@@ -65,8 +65,12 @@ def upgrade() -> None:
         sa.Column("reason", sa.Text(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_token_blacklist_jti"), "token_blacklist", ["jti"], unique=True)
-    op.create_index(op.f("ix_token_blacklist_user_id"), "token_blacklist", ["user_id"], unique=False)
+    op.create_index(
+        op.f("ix_token_blacklist_jti"), "token_blacklist", ["jti"], unique=True
+    )
+    op.create_index(
+        op.f("ix_token_blacklist_user_id"), "token_blacklist", ["user_id"], unique=False
+    )
 
     op.create_table(
         "users",
