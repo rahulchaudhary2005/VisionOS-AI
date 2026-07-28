@@ -363,6 +363,8 @@ class JWTManager:
                 verify_issuer=verify_issuer,
                 verify_audience=verify_audience,
             )
+            # python-jose's `jwt.decode` does not accept a `leeway` kwarg.
+            # Move clock-skew tolerance into our expiration validation.
             decoded = jwt.decode(
                 token,
                 self._secret_key,
@@ -370,7 +372,6 @@ class JWTManager:
                 issuer=self._issuer if verify_issuer else None,
                 audience=self._audience if verify_audience else None,
                 options=options,
-                leeway=self._SUPPORTED_CLOCK_SKEW_SECONDS,
             )
             payload = self._parse_payload(decoded)
             self._validate_payload(payload)
@@ -462,7 +463,9 @@ class JWTManager:
         """
         now = self._now()
         exp = self._get_int_claim(payload, CLAIM_EXPIRES)
-        if now.timestamp() >= exp:
+        # Allow a small clock skew (leeway) when validating expiration so
+        # tokens issued from slightly skewed clocks don't fail validation.
+        if (now.timestamp() - self._SUPPORTED_CLOCK_SKEW_SECONDS) >= exp:
             raise ExpiredTokenException()
 
         nbf = self._get_optional_int_claim(payload, CLAIM_NOT_BEFORE)
