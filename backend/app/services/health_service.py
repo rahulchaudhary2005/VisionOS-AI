@@ -1,5 +1,4 @@
-from sqlalchemy import text
-
+from app.config.settings import settings
 from app.core.system_info import SystemMonitor
 from app.schemas.health import (
     AIServiceHealth,
@@ -9,7 +8,7 @@ from app.schemas.health import (
     SystemHealth,
 )
 from app.services.base_service import BaseService
-from app.config.settings import settings
+from sqlalchemy import text
 
 
 class HealthService(BaseService):
@@ -25,17 +24,12 @@ class HealthService(BaseService):
 
         return HealthResponse(
             success=True,
-
             application=ApplicationHealth(
                 name="VisionOS AI",
                 version=settings.APP_VERSION,
                 uptime=SystemMonitor.uptime(),
             ),
-
-            database=DatabaseHealth(
-                status=database_status
-            ),
-
+            database=DatabaseHealth(status=database_status),
             system=SystemHealth(
                 cpu_percent=SystemMonitor.cpu_usage(),
                 memory_percent=SystemMonitor.memory_usage(),
@@ -45,16 +39,7 @@ class HealthService(BaseService):
                 python_version=SystemMonitor.python_version(),
                 boot_time=SystemMonitor.boot_time(),
             ),
-
-            ollama=AIServiceHealth(
-                status="not_configured"
-            ),
-
-            chromadb=AIServiceHealth(
-                status="not_configured"
-            ),
-
-            ocr=AIServiceHealth(
-                status="not_installed"
-            ),
+            ollama=AIServiceHealth(status="not_configured"),
+            chromadb=AIServiceHealth(status="not_configured"),
+            ocr=AIServiceHealth(status="not_installed"),
         )

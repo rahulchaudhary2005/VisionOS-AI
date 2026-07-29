@@ -1,11 +1,10 @@
 import time
 
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-
 from app.config.settings import settings
 from app.core.metrics import metrics
 from app.utils.logger import logger
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
 
 
 class PerformanceMiddleware(BaseHTTPMiddleware):

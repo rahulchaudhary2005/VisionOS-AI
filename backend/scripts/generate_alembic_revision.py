@@ -13,8 +13,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from alembic.config import Config
 from alembic import command
+from alembic.config import Config
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))

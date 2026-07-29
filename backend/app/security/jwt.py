@@ -38,7 +38,6 @@ from app.config.settings import settings
 from app.security.constants import (
     ACCESS_TOKEN_TYPE,
     AI_API_AUDIENCE,
-    BEARER_SCHEME,
     CLAIM_AUDIENCE,
     CLAIM_EMAIL,
     CLAIM_EXPIRES,
@@ -68,7 +67,7 @@ logger = logging.getLogger(__name__)
 
 EmailAdapter: Final[TypeAdapter[EmailStr]] = TypeAdapter(EmailStr)
 UUIDAdapter: Final[TypeAdapter[UUID]] = TypeAdapter(UUID)
-RoleAdapter: Final[TypeAdapter[UserRole]] = TypeAdapter(UserRole)
+#RoleAdapter: Final[TypeAdapter[UserRole]] = TypeAdapter(UserRole)
 
 
 @dataclass(frozen=True, slots=True)
@@ -262,7 +261,7 @@ class JWTManager:
         self,
         subject: UUID | str,
         email: str | EmailStr,
-        role: UserRole | str,
+        role:  str,
         custom_claims: Optional[Mapping[str, Any]] = None,
         expires_delta: Optional[timedelta] = None,
         issuer: Optional[str] = None,
@@ -602,7 +601,7 @@ class JWTManager:
         self,
         subject: UUID | str,
         email: str | EmailStr,
-        role: UserRole | str,
+        role:  str,
         token_spec: TokenSpec,
         issuer: str,
         not_before: Optional[datetime],
@@ -619,7 +618,7 @@ class JWTManager:
         payload: dict[str, Any] = {
             CLAIM_SUBJECT: str(subject_uuid),
             CLAIM_EMAIL: email_value,
-            CLAIM_ROLE: role_value.value,
+            CLAIM_ROLE: role_value,
             CLAIM_TOKEN_TYPE: token_spec.token_type,
             CLAIM_JWT_ID: str(token_jti),
             CLAIM_ISSUER: issuer,
@@ -634,7 +633,7 @@ class JWTManager:
 
         payload[CLAIM_SUBJECT] = str(subject_uuid)
         payload[CLAIM_EMAIL] = email_value
-        payload[CLAIM_ROLE] = role_value.value
+        payload[CLAIM_ROLE] = role_value
         payload[CLAIM_TOKEN_TYPE] = token_spec.token_type
         payload[CLAIM_JWT_ID] = str(token_jti)
         payload[CLAIM_ISSUER] = issuer
@@ -739,14 +738,23 @@ class JWTManager:
             logger.info("Invalid email claim: %s", exc)
             raise InvalidTokenException() from exc
 
-    def _normalize_role(self, value: UserRole | str) -> UserRole:
-        try:
-            if isinstance(value, UserRole):
-                return value
-            return RoleAdapter.validate_python(value)
-        except ValidationError as exc:
-            logger.info("Invalid role claim: %s", exc)
-            raise InvalidTokenException() from exc
+    def _normalize_role(self, value: str) -> str:
+      """
+      Normalize the role stored in JWT.
+
+      The JWT stores the database role name
+      (for example "admin", "doctor", "researcher").
+      """
+
+      if not isinstance(value, str):
+        raise InvalidTokenException()
+
+      role = value.strip().lower()
+
+      if not role:
+        raise InvalidTokenException()
+
+      return role
 
     def _validate_configuration(self) -> None:
         if not isinstance(self._secret_key, str) or not self._secret_key.strip():

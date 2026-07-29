@@ -37,9 +37,6 @@ import string
 from dataclasses import dataclass
 from typing import Final, Optional
 
-from argon2 import PasswordHasher
-from argon2.exceptions import InvalidHash, VerificationError, VerifyMismatchError
-
 from app.config.settings import settings
 from app.security.constants import (
     PASSWORD_MAX_LENGTH,
@@ -49,7 +46,12 @@ from app.security.constants import (
     PASSWORD_REQUIRE_SPECIAL,
     PASSWORD_REQUIRE_UPPERCASE,
 )
-from app.security.exceptions import AuthenticationServiceException, WeakPasswordException
+from app.security.exceptions import (
+    AuthenticationServiceException,
+    WeakPasswordException,
+)
+from argon2 import PasswordHasher
+from argon2.exceptions import InvalidHash, VerificationError, VerifyMismatchError
 
 logger = logging.getLogger(__name__)
 
@@ -114,11 +116,34 @@ class PasswordManager:
         salt_length:
             Argon2 salt length.
         """
-        self._time_cost: int = int(time_cost or self._get_setting_value("PASSWORD_TIME_COST", default=DEFAULT_TIME_COST))
-        self._memory_cost: int = int(memory_cost or self._get_setting_value("PASSWORD_MEMORY_COST", default=DEFAULT_MEMORY_COST))
-        self._parallelism: int = int(parallelism or self._get_setting_value("PASSWORD_PARALLELISM", default=DEFAULT_PARALLELISM))
-        self._hash_length: int = int(hash_length or self._get_setting_value("PASSWORD_HASH_LENGTH", default=DEFAULT_HASH_LENGTH))
-        self._salt_length: int = int(salt_length or self._get_setting_value("PASSWORD_SALT_LENGTH", default=DEFAULT_SALT_LENGTH))
+        self._time_cost: int = int(
+            time_cost
+            or self._get_setting_value("PASSWORD_TIME_COST", default=DEFAULT_TIME_COST)
+        )
+        self._memory_cost: int = int(
+            memory_cost
+            or self._get_setting_value(
+                "PASSWORD_MEMORY_COST", default=DEFAULT_MEMORY_COST
+            )
+        )
+        self._parallelism: int = int(
+            parallelism
+            or self._get_setting_value(
+                "PASSWORD_PARALLELISM", default=DEFAULT_PARALLELISM
+            )
+        )
+        self._hash_length: int = int(
+            hash_length
+            or self._get_setting_value(
+                "PASSWORD_HASH_LENGTH", default=DEFAULT_HASH_LENGTH
+            )
+        )
+        self._salt_length: int = int(
+            salt_length
+            or self._get_setting_value(
+                "PASSWORD_SALT_LENGTH", default=DEFAULT_SALT_LENGTH
+            )
+        )
 
         self._hasher = PasswordHasher(
             time_cost=self._time_cost,
@@ -245,10 +270,14 @@ class PasswordManager:
             return PasswordPolicyResult(is_valid=False, reasons=tuple(reasons))
 
         if len(password) < PASSWORD_MIN_LENGTH:
-            reasons.append(f"Password must be at least {PASSWORD_MIN_LENGTH} characters long.")
+            reasons.append(
+                f"Password must be at least {PASSWORD_MIN_LENGTH} characters long."
+            )
 
         if len(password) > PASSWORD_MAX_LENGTH:
-            reasons.append(f"Password must be at most {PASSWORD_MAX_LENGTH} characters long.")
+            reasons.append(
+                f"Password must be at most {PASSWORD_MAX_LENGTH} characters long."
+            )
 
         if PASSWORD_REQUIRE_UPPERCASE and not re.search(r"[A-Z]", password):
             reasons.append("Password must contain at least one uppercase letter.")
@@ -259,7 +288,9 @@ class PasswordManager:
         if PASSWORD_REQUIRE_DIGIT and not re.search(r"\d", password):
             reasons.append("Password must contain at least one digit.")
 
-        if PASSWORD_REQUIRE_SPECIAL and not re.search(rf"[{re.escape(string.punctuation)}]", password):
+        if PASSWORD_REQUIRE_SPECIAL and not re.search(
+            rf"[{re.escape(string.punctuation)}]", password
+        ):
             reasons.append("Password must contain at least one special character.")
 
         return PasswordPolicyResult(

@@ -1,18 +1,22 @@
 """
 ===============================================================================
-VisionOS AI - Security Constants
+VisionOS AI - Enterprise Security Constants
 ===============================================================================
 
-This module contains all authentication and authorization constants used
-throughout the application.
+Centralized security constants used across the VisionOS AI platform.
 
-Centralizing these values prevents magic strings, improves maintainability,
-and ensures consistency across the authentication subsystem.
+This module intentionally contains only generic security constants and enums.
 
-Author: VisionOS AI
-Architecture: Enterprise
+Role and Permission registries live in:
+
+    app.auth.roles
+    app.auth.permissions
+
+to avoid duplication and circular dependencies.
 ===============================================================================
 """
+
+from __future__ import annotations
 
 from enum import Enum
 from typing import Final
@@ -25,6 +29,7 @@ from typing import Final
 JWT_ALGORITHM: Final[str] = "HS256"
 
 ACCESS_TOKEN_TYPE: Final[str] = "access"
+
 REFRESH_TOKEN_TYPE: Final[str] = "refresh"
 
 BEARER_SCHEME: Final[str] = "Bearer"
@@ -56,25 +61,59 @@ CLAIM_JWT_ID: Final[str] = "jti"
 
 
 # =============================================================================
-# User Roles
+# HTTP Headers
 # =============================================================================
 
-class UserRole(str, Enum):
+HEADER_AUTHORIZATION: Final[str] = "Authorization"
+
+HEADER_REQUEST_ID: Final[str] = "X-Request-ID"
+
+HEADER_PROCESS_TIME: Final[str] = "X-Process-Time"
+
+HEADER_CORRELATION_ID: Final[str] = "X-Correlation-ID"
+
+HEADER_USER_AGENT: Final[str] = "User-Agent"
+
+HEADER_FORWARDED_FOR: Final[str] = "X-Forwarded-For"
+
+HEADER_REAL_IP: Final[str] = "X-Real-IP"
+
+
+# =============================================================================
+# OAuth
+# =============================================================================
+
+TOKEN_URL: Final[str] = "/api/v1/auth/login"
+
+AUTH_SCHEME_NAME: Final[str] = "JWT Authentication"
+
+TOKEN_ISSUER: Final[str] = "visionos-auth"
+
+AI_API_AUDIENCE: Final[str] = "visionos-ai"
+
+AI_SERVICE_NAME: Final[str] = "VisionOS AI"
+
+
+# =============================================================================
+# Token Types
+# =============================================================================
+
+class TokenType(str, Enum):
     """
-    System roles.
-
-    More roles can be added later without modifying the security logic.
+    Supported JWT token types.
     """
 
-    ADMIN = "admin"
+    ACCESS = "access"
 
-    MODERATOR = "moderator"
+    REFRESH = "refresh"
 
-    USER = "user"
-
-    AI_ENGINE = "ai_engine"
+    API_KEY = "api_key"
 
     SERVICE = "service"
+
+    RESET_PASSWORD = "reset_password"
+
+    EMAIL_VERIFICATION = "email_verification"
 
 
 # =============================================================================
@@ -83,7 +122,7 @@ class UserRole(str, Enum):
 
 class UserStatus(str, Enum):
     """
-    Current account status.
+    Current lifecycle state of a user account.
     """
 
     ACTIVE = "active"
@@ -100,106 +139,103 @@ class UserStatus(str, Enum):
 
 
 # =============================================================================
-# Permissions
+# Authentication Method
 # =============================================================================
 
-class Permission(str, Enum):
+class AuthenticationMethod(str, Enum):
     """
-    Permission identifiers.
-
-    RBAC middleware will use these.
+    Authentication mechanism used by the client.
     """
 
-    READ = "read"
+    PASSWORD = "password"
 
-    WRITE = "write"
+    OAUTH = "oauth"
 
-    UPDATE = "update"
+    API_KEY = "api_key"
 
-    DELETE = "delete"
+    FACE_RECOGNITION = "face_recognition"
 
-    MANAGE_USERS = "manage_users"
+    VOICE = "voice"
 
-    MANAGE_ROLES = "manage_roles"
-
-    MANAGE_AI = "manage_ai"
-
-    MANAGE_SYSTEM = "manage_system"
-
-    VIEW_AUDIT_LOGS = "view_audit_logs"
-
-    TRAIN_MODELS = "train_models"
+    SERVICE_ACCOUNT = "service_account"
 
 
 # =============================================================================
-# Authentication Events
+# OAuth Providers
 # =============================================================================
 
-LOGIN_SUCCESS: Final[str] = "login_success"
+class OAuthProvider(str, Enum):
+    """
+    Supported OAuth providers.
+    """
 
-LOGIN_FAILED: Final[str] = "login_failed"
+    GOOGLE = "google"
 
-LOGOUT: Final[str] = "logout"
+    GITHUB = "github"
 
-TOKEN_REFRESH: Final[str] = "token_refresh"
+    MICROSOFT = "microsoft"
 
-PASSWORD_CHANGED: Final[str] = "password_changed"
+    APPLE = "apple"
 
-ACCOUNT_LOCKED: Final[str] = "account_locked"
-
-
-# =============================================================================
-# Default Limits
-# =============================================================================
-
-MAX_LOGIN_ATTEMPTS: Final[int] = 5
-
-ACCOUNT_LOCK_MINUTES: Final[int] = 30
-
-PASSWORD_MIN_LENGTH: Final[int] = 8
-
-PASSWORD_MAX_LENGTH: Final[int] = 128
+    LOCAL = "local"
 
 
 # =============================================================================
-# Password Rules
+# Multi-Factor Authentication
 # =============================================================================
 
-PASSWORD_REQUIRE_UPPERCASE: Final[bool] = True
+class MFAType(str, Enum):
+    """
+    Supported MFA methods.
+    """
 
-PASSWORD_REQUIRE_LOWERCASE: Final[bool] = True
+    NONE = "none"
 
-PASSWORD_REQUIRE_DIGIT: Final[bool] = True
+    TOTP = "totp"
 
-PASSWORD_REQUIRE_SPECIAL: Final[bool] = True
+    EMAIL = "email"
 
+    SMS = "sms"
 
-# =============================================================================
-# API Headers
-# =============================================================================
+    FACE = "face"
 
-HEADER_AUTHORIZATION: Final[str] = "Authorization"
-
-HEADER_REQUEST_ID: Final[str] = "X-Request-ID"
-
-HEADER_PROCESS_TIME: Final[str] = "X-Process-Time"
+    HARDWARE_KEY = "hardware_key"
 
 
 # =============================================================================
-# OAuth2
+# Exported Symbols
 # =============================================================================
 
-TOKEN_URL: Final[str] = "/api/v1/auth/login"
-
-AUTH_SCHEME_NAME: Final[str] = "JWT Authentication"
-
-
-# =============================================================================
-# Future AI Authentication
-# =============================================================================
-
-AI_SERVICE_NAME: Final[str] = "VisionOS AI"
-
-AI_API_AUDIENCE: Final[str] = "visionos-ai"
-
-TOKEN_ISSUER: Final[str] = "visionos-auth"
+__all__ = [
+    "JWT_ALGORITHM",
+    "ACCESS_TOKEN_TYPE",
+    "REFRESH_TOKEN_TYPE",
+    "BEARER_SCHEME",
+    "CLAIM_SUBJECT",
+    "CLAIM_EMAIL",
+    "CLAIM_ROLE",
+    "CLAIM_TOKEN_TYPE",
+    "CLAIM_ISSUED_AT",
+    "CLAIM_EXPIRES",
+    "CLAIM_NOT_BEFORE",
+    "CLAIM_ISSUER",
+    "CLAIM_AUDIENCE",
+    "CLAIM_JWT_ID",
+    "HEADER_AUTHORIZATION",
+    "HEADER_REQUEST_ID",
+    "HEADER_PROCESS_TIME",
+    "HEADER_CORRELATION_ID",
+    "HEADER_USER_AGENT",
+    "HEADER_FORWARDED_FOR",
+    "HEADER_REAL_IP",
+    "TOKEN_URL",
+    "AUTH_SCHEME_NAME",
+    "TOKEN_ISSUER",
+    "AI_API_AUDIENCE",
+    "AI_SERVICE_NAME",
+    "TokenType",
+    "UserStatus",
+    "AuthenticationMethod",
+    "OAuthProvider",
+    "MFAType",
+]

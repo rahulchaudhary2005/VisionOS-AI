@@ -1,10 +1,11 @@
+import atexit
 import os
 import sys
+import tempfile
 from pathlib import Path
-import pytest
 
+import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Compute project root and ensure `backend` is on sys.path so imports like
@@ -19,15 +20,14 @@ os.environ.setdefault("JWT_SECRET", "test_jwt_secret")
 # Use a temporary file-backed SQLite DB for tests so multiple connections
 # (TestClient, SQLAlchemy sessions) share the same database. Clean up
 # the file at process exit.
-import tempfile
-import atexit
 
 _tmp_db = tempfile.NamedTemporaryFile(
     prefix="visionos_test_", suffix=".db", delete=False
 )
 _tmp_db_path = _tmp_db.name
 _tmp_db.close()
-os.environ.setdefault("DATABASE_URL", f"sqlite:///{_tmp_db_path.replace('\\', '/')}")
+_db_url = "sqlite:///" + _tmp_db_path.replace("\\", "/")
+os.environ.setdefault("DATABASE_URL", _db_url)
 os.environ.setdefault("OLLAMA_URL", "http://localhost")
 
 

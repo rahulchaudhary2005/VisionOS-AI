@@ -1,8 +1,7 @@
-from fastapi import Request
-from fastapi.responses import JSONResponse
-
 from app.core.exceptions import VisionOSException
 from app.utils.logger import logger
+from fastapi import Request
+from fastapi.responses import JSONResponse
 
 
 async def global_exception_handler(

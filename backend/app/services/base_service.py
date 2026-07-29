@@ -11,4 +11,3 @@ class BaseService:
 
     def __init__(self, db: Session):
         self.db = db
-        

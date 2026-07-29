@@ -23,10 +23,10 @@ from typing import Optional
 
 from fastapi import HTTPException, status
 
-
 # =============================================================================
 # Base Security Exception
 # =============================================================================
+
 
 class SecurityException(HTTPException):
     """
@@ -67,6 +67,7 @@ class SecurityException(HTTPException):
 # =============================================================================
 # Authentication Exceptions
 # =============================================================================
+
 
 class InvalidCredentialsException(SecurityException):
     """Raised when username/email or password is incorrect."""
@@ -132,6 +133,7 @@ class InvalidTokenTypeException(SecurityException):
 # Authorization Exceptions
 # =============================================================================
 
+
 class PermissionDeniedException(SecurityException):
     """Raised when user lacks permission."""
 
@@ -157,6 +159,7 @@ class RoleRequiredException(SecurityException):
 # =============================================================================
 # User Exceptions
 # =============================================================================
+
 
 class UserNotFoundException(SecurityException):
     """Raised when user cannot be found."""
@@ -217,6 +220,7 @@ class UserSuspendedException(SecurityException):
 # Password Exceptions
 # =============================================================================
 
+
 class WeakPasswordException(SecurityException):
     """Raised when password policy validation fails."""
 
@@ -242,6 +246,7 @@ class PasswordMismatchException(SecurityException):
 # =============================================================================
 # Account Security Exceptions
 # =============================================================================
+
 
 class TooManyLoginAttemptsException(SecurityException):
     """Raised after exceeding maximum login attempts."""
@@ -282,6 +287,7 @@ class SessionExpiredException(SecurityException):
 # Internal Security Exceptions
 # =============================================================================
 
+
 class AuthenticationServiceException(SecurityException):
     """
     Raised for unexpected authentication service failures.
@@ -305,4 +311,65 @@ class AuthorizationServiceException(SecurityException):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Authorization service is temporarily unavailable.",
             error_code="AUTHORIZATION_SERVICE_ERROR",
+        )
+# =============================================================================
+# Role Exceptions
+# =============================================================================
+
+class RoleNotFoundException(SecurityException):
+    """Raised when a role cannot be found."""
+
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Role not found.",
+            error_code="ROLE_NOT_FOUND",
+        )
+
+
+class RoleAlreadyExistsException(SecurityException):
+    """Raised when attempting to create a duplicate role."""
+
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Role already exists.",
+            error_code="ROLE_ALREADY_EXISTS",
+        )
+
+
+class SystemRoleModificationException(SecurityException):
+    """Raised when a protected system role cannot be modified."""
+
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="System roles cannot be modified.",
+            error_code="SYSTEM_ROLE_PROTECTED",
+        )
+
+
+# =============================================================================
+# Permission Exceptions
+# =============================================================================
+
+class PermissionNotFoundException(SecurityException):
+    """Raised when a permission cannot be found."""
+
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Permission not found.",
+            error_code="PERMISSION_NOT_FOUND",
+        )
+
+
+class PermissionAlreadyExistsException(SecurityException):
+    """Raised when attempting to create a duplicate permission."""
+
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Permission already exists.",
+            error_code="PERMISSION_ALREADY_EXISTS",
         )

@@ -1,6 +1,5 @@
-from sqlalchemy import create_engine
-
 from app.config.settings import settings
+from sqlalchemy import create_engine
 
 engine = create_engine(
     settings.DATABASE_URL,

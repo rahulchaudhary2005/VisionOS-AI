@@ -48,6 +48,4 @@ class SystemMonitor:
 
     @staticmethod
     def boot_time() -> str:
-        return datetime.fromtimestamp(
-            psutil.boot_time()
-        ).strftime("%Y-%m-%d %H:%M:%S")
+        return datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")

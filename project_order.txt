@@ -108,3 +108,51 @@ security/
 ├── types.py             # JWT payload models
 └── constants.py         # Auth constants
 
+
+
+Sprint 3.5.3A — Enterprise Authorization Foundation
+
+We'll implement, in order:
+
+Permission Registry
+Role Model
+Permission Model
+Role–Permission Mapping
+Authorization Service
+Authorization Dependencies
+Protected Route Decorators
+Database Seeder
+Swagger Authorization Integration
+
+This gives VisionOS-AI an authorization system that will scale cleanly as the AI capabilities are added.
+
+
+backend/
+└── app/
+    ├── authorization/
+    │   ├── __init__.py
+    │   ├── constants.py          # Permission registry
+    │   ├── enums.py              # Roles & permission enums
+    │   ├── exceptions.py         # Authorization exceptions
+    │   ├── policies.py           # Policy evaluation
+    │   ├── decorators.py         # Route decorators
+    │   ├── dependencies.py       # FastAPI dependencies
+    │   └── service.py            # Authorization service
+    │
+    ├── models/
+    │   ├── role.py
+    │   ├── permission.py
+    │   └── role_permission.py
+    │
+    ├── repositories/
+    │   ├── role_repository.py
+    │   ├── permission_repository.py
+    │   └── role_permission_repository.py
+    │
+    ├── schemas/
+    │   ├── role.py
+    │   └── permission.py
+    │
+    └── api/
+        └── routes/
+            └── admin.py

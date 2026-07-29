@@ -10,14 +10,14 @@ and authorization subsystem.
 
 Features
 --------
-✓ JWT Payload Models
-✓ Access & Refresh Tokens
-✓ Authentication Context
-✓ Session Metadata
-✓ Login Response
-✓ Authorization Context
-✓ Password Reset Models
-✓ Future OAuth Compatibility
+- JWT Payload Models
+- Access & Refresh Tokens
+- Authentication Context
+- Session Metadata
+- Login Response
+- Authorization Context
+- Password Reset Models
+- Future OAuth Compatibility
 
 These models eliminate magic dictionaries and provide full IDE support.
 
@@ -32,14 +32,13 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
+from app.models.role import Role
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-
-from app.security.constants import UserRole
-
 
 # =============================================================================
 # Base Model
 # =============================================================================
+
 
 class SecurityBaseModel(BaseModel):
     """
@@ -63,6 +62,7 @@ class SecurityBaseModel(BaseModel):
 # JWT Payload
 # =============================================================================
 
+
 class JWTPayload(SecurityBaseModel):
     """
     JWT payload after decoding.
@@ -70,13 +70,11 @@ class JWTPayload(SecurityBaseModel):
     This model represents the authenticated identity.
     """
 
-    sub: UUID = Field(
-        description="Unique user identifier"
-    )
+    sub: UUID = Field(description="Unique user identifier")
 
     email: EmailStr
 
-    role: UserRole
+    role: str
 
     token_type: str
 
@@ -97,6 +95,7 @@ class JWTPayload(SecurityBaseModel):
 # Token Pair
 # =============================================================================
 
+
 class TokenPair(SecurityBaseModel):
     """
     Returned after successful login.
@@ -115,6 +114,7 @@ class TokenPair(SecurityBaseModel):
 # Access Token
 # =============================================================================
 
+
 class AccessToken(SecurityBaseModel):
     """
     Access token response.
@@ -131,6 +131,7 @@ class AccessToken(SecurityBaseModel):
 # Refresh Token
 # =============================================================================
 
+
 class RefreshToken(SecurityBaseModel):
     """
     Refresh token model.
@@ -143,6 +144,7 @@ class RefreshToken(SecurityBaseModel):
 # Refresh Request
 # =============================================================================
 
+
 class RefreshRequest(SecurityBaseModel):
     """
     Request body for refreshing tokens.
@@ -154,6 +156,7 @@ class RefreshRequest(SecurityBaseModel):
 # =============================================================================
 # Login Request
 # =============================================================================
+
 
 class LoginRequest(SecurityBaseModel):
     """
@@ -172,6 +175,7 @@ class LoginRequest(SecurityBaseModel):
 # Authentication Response
 # =============================================================================
 
+
 class AuthenticationResponse(SecurityBaseModel):
     """
     Response after successful authentication.
@@ -187,6 +191,7 @@ class AuthenticationResponse(SecurityBaseModel):
 # =============================================================================
 # Session Metadata
 # =============================================================================
+
 
 class SessionMetadata(SecurityBaseModel):
     """
@@ -214,6 +219,7 @@ class SessionMetadata(SecurityBaseModel):
 # Authenticated User Context
 # =============================================================================
 
+
 class AuthenticatedUser(SecurityBaseModel):
     """
     Current authenticated user.
@@ -227,7 +233,7 @@ class AuthenticatedUser(SecurityBaseModel):
 
     full_name: str
 
-    role: UserRole
+    role: str
 
     is_active: bool
 
@@ -239,6 +245,7 @@ class AuthenticatedUser(SecurityBaseModel):
 # =============================================================================
 # Authorization Context
 # =============================================================================
+
 
 class AuthorizationContext(SecurityBaseModel):
     """
@@ -259,6 +266,7 @@ class AuthorizationContext(SecurityBaseModel):
 # =============================================================================
 # Password Reset
 # =============================================================================
+
 
 class PasswordResetRequest(SecurityBaseModel):
     """
@@ -285,6 +293,7 @@ class PasswordResetConfirm(SecurityBaseModel):
 # Email Verification
 # =============================================================================
 
+
 class EmailVerification(SecurityBaseModel):
     """
     Email verification payload.
@@ -296,6 +305,7 @@ class EmailVerification(SecurityBaseModel):
 # =============================================================================
 # API Key Authentication (Future AI Services)
 # =============================================================================
+
 
 class APIKeyContext(SecurityBaseModel):
     """
@@ -314,6 +324,7 @@ class APIKeyContext(SecurityBaseModel):
 # =============================================================================
 # OAuth Identity (Future)
 # =============================================================================
+
 
 class OAuthIdentity(SecurityBaseModel):
     """
@@ -334,6 +345,7 @@ class OAuthIdentity(SecurityBaseModel):
 # =============================================================================
 # Audit Event
 # =============================================================================
+
 
 class SecurityAuditEvent(SecurityBaseModel):
     """

@@ -1,13 +1,27 @@
+import importlib
+import sys
 from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from pathlib import Path
 
 from alembic import context
+from sqlalchemy import engine_from_config, pool
+
+# Add the backend package root to Python path so `app` imports resolve.
+project_root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(project_root))
+
+settings = importlib.import_module("app.config.settings").settings
+Base = importlib.import_module("app.database.base").Base
+importlib.import_module("app.models.token_blacklist")  # noqa: F401
+importlib.import_module("app.models.user")  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+sqlalchemy_url = config.get_main_option("sqlalchemy.url")
+if not sqlalchemy_url or sqlalchemy_url == "driver://user:pass@localhost/dbname":
+    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -18,7 +32,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -64,9 +78,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

@@ -1,0 +1,129 @@
+Phase 1 (Highest Priority)
+1️⃣ auth_service.py ⭐⭐⭐⭐⭐
+
+Priority: Highest
+
+This is the heart of your authentication system.
+
+It should handle:
+
+Login
+Register
+Password verification
+Password hashing
+JWT generation
+Refresh tokens
+Logout
+Email verification
+Password reset
+User activation
+
+Your router already uses:
+
+service = AuthService(db)
+
+so this file should be completed first.
+
+2️⃣ refresh_token.py ⭐⭐⭐⭐⭐
+
+Implements:
+
+Refresh access token
+Refresh rotation
+Token revocation
+Blacklist integration
+3️⃣ validators.py
+
+Contains:
+
+Email validation
+Password strength validation
+Username validation
+Login validation
+Phase 2 (RBAC)
+4️⃣ role_service.py
+
+Responsibilities:
+
+Create role
+Update role
+Delete role
+List roles
+Assign default permissions
+5️⃣ permission_service.py
+
+Responsibilities:
+
+Create permission
+Delete permission
+Update permission
+Assign permission to role
+Remove permission
+6️⃣ policy.py
+
+Enterprise authorization policies, for example:
+
+User can edit own profile
+
+Admin can edit every profile
+
+OCR Operator can upload OCR
+
+AI Engineer can manage vectors
+
+Security Admin can revoke tokens
+7️⃣ cache.py
+
+RBAC cache:
+
+Redis-ready
+
+Permission Cache
+
+Role Cache
+
+JWT Cache
+
+Session Cache
+Phase 3
+8️⃣ oauth.py
+
+Future support:
+
+Google Login
+GitHub Login
+Microsoft Login
+9️⃣ face_auth.py
+
+Biometric authentication.
+
+🔟 token_blacklist.py
+
+Production logout.
+
+Store revoked JWT IDs.
+
+11️⃣ security.py
+
+General security helpers:
+
+Password policy
+Rate limiting
+IP validation
+Device fingerprinting
+MFA helpers
+12️⃣ service.py
+
+Usually a façade that combines:
+
+AuthService
+AuthorizationService
+JWTManager
+
+so other modules can use one interface.
+
+13️⃣ jwt_handler.py
+
+This file is almost complete, but there is one important update needed.
+
+Currently it still imports:

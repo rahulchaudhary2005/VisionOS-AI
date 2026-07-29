@@ -1,11 +1,13 @@
 fastapi
 uvicorn
 pydantic
+email-validator
 sqlalchemy
 alembic
 python-jose
 passlib
 bcrypt
+argon2-cffi
 python-multipart
 
 opencv-python

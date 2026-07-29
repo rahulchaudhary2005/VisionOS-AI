@@ -1,0 +1,457 @@
+🚀 VisionOS-AI Enterprise Roadmap v2
+
+Here's the roadmap I'd recommend going forward.
+
+VisionOS-AI
+
+Phase 1  ✅ Foundation
+Phase 2  ✅ Enterprise Authentication
+Phase 3  🔄 Enterprise Authorization (RBAC)
+Phase 4  Audit & Security
+Phase 5  Enterprise Storage
+Phase 6  AI Infrastructure
+Phase 7  Document Intelligence
+Phase 8  AI Engine
+Phase 9  Background Workers
+Phase 10 Observability
+Phase 11 Deployment
+⭐ Phase 3 — Enterprise Authorization (RBAC)
+
+Authentication answers:
+
+"Who are you?"
+
+Authorization answers:
+
+"What are you allowed to do?"
+
+This is the next logical step.
+
+Folder Structure
+app/
+│
+├── authorization/
+│
+│   ├── roles.py
+│   ├── permissions.py
+│   ├── decorators.py
+│   ├── dependencies.py
+│   ├── policy.py
+│   ├── cache.py
+│   └── exceptions.py
+│
+├── models/
+│   ├── role.py
+│   ├── permission.py
+│   └── user_role.py
+│
+├── repositories/
+│   ├── role_repository.py
+│   ├── permission_repository.py
+│   └── user_role_repository.py
+│
+├── services/
+│   ├── role_service.py
+│   ├── permission_service.py
+│   └── authorization_service.py
+Enterprise Features
+
+Instead of simple roles:
+
+Admin
+
+User
+
+We'll implement:
+
+Role
+
+↓
+
+Permission
+
+↓
+
+Policy
+
+↓
+
+Authorization
+
+↓
+
+Protected Endpoint
+
+Example permissions:
+
+user:create
+user:read
+user:update
+user:delete
+
+document:upload
+document:download
+document:delete
+
+ocr:run
+
+rag:query
+
+embedding:create
+
+admin:dashboard
+
+ai:model:train
+
+system:settings
+
+This is flexible enough to support future AI modules.
+
+⭐ Phase 4 — Enterprise Audit & Security
+
+Every security event should be recorded.
+
+Audit Table
+audit_logs
+
+id
+
+user_id
+
+action
+
+resource
+
+status
+
+ip_address
+
+user_agent
+
+request_id
+
+timestamp
+
+Track events such as:
+
+Login
+Logout
+Token refresh
+Failed login
+Password change
+Role update
+Permission update
+OCR execution
+AI queries
+File uploads
+⭐ Phase 5 — Enterprise Storage
+
+Before AI, establish a secure storage layer.
+
+storage/
+
+manager.py
+
+local.py
+
+s3.py
+
+minio.py
+
+encrypted.py
+
+checksum.py
+
+Capabilities:
+
+SHA-256 verification
+MIME validation
+Virus scan hook
+Duplicate detection
+Versioning
+Encryption at rest
+⭐ Phase 6 — AI Infrastructure
+
+This is where VisionOS-AI becomes unique.
+
+AI Core
+
+↓
+
+Embedding Service
+
+↓
+
+Vector Store
+
+↓
+
+Semantic Search
+
+↓
+
+Prompt Manager
+
+↓
+
+LLM Gateway
+
+↓
+
+Model Registry
+
+↓
+
+Inference Pipeline
+
+Folder layout:
+
+ai/
+
+embedding/
+
+vector/
+
+llm/
+
+prompts/
+
+models/
+
+pipeline/
+
+memory/
+
+cache/
+⭐ Phase 7 — Document Intelligence
+
+Since VisionOS-AI focuses on AI, build a document pipeline.
+
+PDF
+
+↓
+
+OCR
+
+↓
+
+Layout Detection
+
+↓
+
+Table Extraction
+
+↓
+
+Chunking
+
+↓
+
+Embedding
+
+↓
+
+ChromaDB
+
+↓
+
+RAG
+
+Support:
+
+PDF
+DOCX
+PPTX
+Images
+Scanned PDFs
+CSV
+Excel
+⭐ Phase 8 — Background Processing
+
+AI workloads are often long-running.
+
+Introduce:
+
+Celery
+
+Redis
+
+Task Queue
+
+Worker
+
+Scheduler
+
+Jobs:
+
+OCR
+Embedding generation
+Model downloads
+Notifications
+Cleanup
+Reports
+⭐ Phase 9 — Observability
+
+Enterprise platforms need visibility.
+
+Add:
+
+Prometheus metrics
+Structured JSON logging
+Request tracing
+OpenTelemetry
+Grafana dashboards
+Health dashboards
+AI performance metrics
+⭐ Phase 10 — Deployment
+
+Package the platform for production.
+
+Docker
+
+↓
+
+Docker Compose
+
+↓
+
+Nginx
+
+↓
+
+GitHub Actions
+
+↓
+
+CI/CD
+
+↓
+
+Production Deployment
+
+
+Next Development Roadmap
+Phase 1 – Complete Backend Authentication (Recommended)
+
+Finish the remaining backend services:
+
+app/auth/
+    auth_router.py
+    authorization_dependencies.py
+    current_user.py
+
+app/services/
+    role_service.py
+    permission_service.py
+    user_service.py
+
+This gives you a complete authentication and user management API.
+
+Phase 2 – Document Management
+DocumentService
+
+Upload
+Delete
+Download
+Metadata
+Versioning
+Encryption
+Phase 3 – OCR Engine
+OCRService
+
+Tesseract
+
+EasyOCR
+
+Image preprocessing
+
+Multi-language OCR
+Phase 4 – Document Extraction
+PDF
+
+DOCX
+
+PPTX
+
+TXT
+
+CSV
+
+Excel
+
+Images
+Phase 5 – AI Chunking
+RecursiveCharacterTextSplitter
+
+Metadata
+
+Chunk IDs
+
+Chunk Storage
+Phase 6 – Embeddings
+EmbeddingService
+
+Ollama embeddings
+
+BGE
+
+Nomic
+
+SentenceTransformers
+Phase 7 – Vector Database
+ChromaDB
+
+Encrypted Storage
+
+Similarity Search
+
+Metadata Search
+Phase 8 – Local RAG
+Retriever
+
+Context Builder
+
+Prompt Builder
+
+Answer Generator
+
+Citations
+Phase 9 – AI Chat
+Conversation Memory
+
+Streaming
+
+History
+
+Context Injection
+Phase 10 – Frontend
+React
+
+Dashboard
+
+Chat UI
+
+Upload UI
+
+Admin Panel
+
+Role Management
+
+User Management
+My Recommendation
+
+I would not move to the AI engine just yet. Before that, finish the backend API so every feature has a clean endpoint.
+
+The order I recommend is:
+
+✅ Authentication Routes
+✅ Authorization Dependencies
+✅ User Service
+✅ Role Service
+✅ Permission Service
+✅ Admin APIs
+✅ User Management APIs
+✅ Document Upload APIs
+🚀 Then start the AI pipeline (OCR → Embeddings → ChromaDB → RAG → Ollama).
+
+This sequence will give you a production-ready backend that is much easier to integrate with the frontend and the AI modules later.
